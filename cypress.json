@@ -1,1 +1,7 @@
-{}
+{
+    "baseUrl": "https://parabank.parasoft.com/parabank",
+    "env": {
+      "username": "john",
+      "password": "demo"
+    }
+  }
