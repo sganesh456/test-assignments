@@ -1,0 +1,19 @@
+{
+  "name": "sdet-assignment",
+  "version": "1.0.0",
+  "description": "A modern test framework for a demo bank application",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx cypress run"
+  },
+  "keywords": [
+    "js",
+    "cypress",
+    "percy"
+  ],
+  "author": "Ganesh Sugavanam",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^8.0.0"
+  }
+}
