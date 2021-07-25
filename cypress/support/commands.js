@@ -23,12 +23,32 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
 Cypress.Commands.add('login', (username, password) => {
-        cy.get('input[name="username"]').type(Cypress.env('username'))
-        cy.get('input[name="password"]').type(Cypress.env('password'))
+        cy.get('input[name="username"]').type(username)
+        cy.get('input[name="password"]').type(password)
         cy.get('input[value="Log In"]').click()
 })
 
 Cypress.Commands.add('logout', () => {    
     cy.contains('Log Out').click()
+})
+
+Cypress.Commands.add('openNewAccount', (accountType) => {
+    cy.contains('Open New Account').click()
+    cy.get('#type').select(accountType)
+    cy.get('#fromAccountId').select('13344')
+    cy.get('input[value="Open New Account"]').click()
+    cy.get('h1').should('have.text', 'Account Opened!')
+        .next('p').should('have.text', 'Congratulations, your account is now open.')
+        .next('p').within(($form) => {
+            let accountId = $form.find('#newAccountId').text()
+            let newAccountText = `Your new account number: ${accountId}`
+            expect($form.text()).to.eq(newAccountText)
+            return cy.wrap(accountId)                       
+        })               
+})
+
+Cypress.Commands.add('fillBillPayForm', (element, value) => {
+    cy.get('.form2').find(`input[name="${element}"]`).type(value)
 })
