@@ -55,7 +55,6 @@ Cypress.Commands.add('fillBillPayForm', (element, value) => {
 })
 
 Cypress.Commands.add('doBillPay', (fromAccount, toAccount, payeeName, amount) => {
-
     const formData = {
         'payee.name': payeeName,
         'payee.address.street': 'test',
@@ -74,4 +73,23 @@ Cypress.Commands.add('doBillPay', (fromAccount, toAccount, payeeName, amount) =>
     })
     cy.get('select[name="fromAccountId"]').select(fromAccount)
     cy.get('input[value="Send Payment"]').click()
+})
+
+Cypress.Commands.add('verifyAccountDetails', (accountNumber, accountType, balance, available) => {
+    let values = []
+
+    cy.wait(3000)
+    cy.contains('Account Details').next().find('tr').each(($el) => {
+        cy.wrap($el).invoke('text').then(text => {
+            values.push(text.replace(/\s+(?=\s)/g, '').trim())
+        })
+    }).then(() => {
+        expect(values).to.deep.eq([`Account Number: ${accountNumber}`, `Account Type: ${accountType}`, `Balance: ${balance}`, `Available: ${available}`])
+    })
+})
+
+Cypress.Commands.add('convertToInt', (value) => {
+    let regex = /[^0-9.-]+/g
+
+    return cy.wrap(parseFloat(value.replace(regex, '')))
 })

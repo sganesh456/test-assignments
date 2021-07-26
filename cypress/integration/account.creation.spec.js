@@ -2,6 +2,7 @@
 
 const USERNAME = Cypress.env('username')
 const PASSWORD = Cypress.env('password')
+const fromAccount = Cypress.env('baseAccount')
 
 context('Verify Account Creation', () => {
 
@@ -22,25 +23,17 @@ context('Verify Account Creation', () => {
 
     it('Verification of account details page', () => {
         const ACCOUNT_TYPE = 'SAVINGS'
-        let values = []
         let accountId;
 
-        cy.openNewAccount(ACCOUNT_TYPE).then(($el) => {
-            accountId = $el.find('a').text()
-        })        
-        cy.get('#newAccountId').click()
-        cy.wait(3000)
-        cy.contains('Account Details').next().find('tr').each(($el) => {
-            cy.wrap($el).invoke('text').then(text => {
-                values.push(text.replace(/\s+(?=\s)/g, '').trim())
-            })
-        }).then(() => {
-            expect(values).to.deep.eq([`Account Number: ${accountId}`, `Account Type: ${ACCOUNT_TYPE}`, 'Balance: $100.00', 'Available: $100.00'])
+        cy.openNewAccount(ACCOUNT_TYPE)
+        cy.get('#newAccountId').then(($el) => {
+            accountId = $el.text()
+            cy.wrap($el).click()
+            cy.verifyAccountDetails(accountId, ACCOUNT_TYPE, '$100.00', '$100.00')
         })
     })
 
     it('Verification of Bill Pay section', () => {
-        let fromAccount = Cypress.env('baseAccount')
         let amount = '200.00'
         let payeeName = 'test'
 
@@ -50,6 +43,38 @@ context('Verify Account Creation', () => {
             cy.wrap($el).next()
         }).then(($text) => {           
             expect($text.text().trim()).equal(`Bill Payment to ${payeeName} in the amount of $${amount} from account ${fromAccount} was successful.`)
+        })
+    })
+
+    it('Verification of Account Overview section', () => {
+        const payeeName = 'test'
+        let fromAccount = Cypress.env('baseAccount')
+        let initialBalance
+        let availableAmount
+
+        cy.openNewAccount('SAVINGS')
+
+        cy.contains('Accounts Overview').click()
+        cy.contains('td', fromAccount).siblings().then(($el) => {
+            initialBalance = $el[0].innerText
+            availableAmount = $el[1].innerText
+        })
+
+        cy.doBillPay(fromAccount, Cypress.env('newAccountId'), payeeName, '200.00')
+        cy.contains('Bill Payment Complete')
+
+        cy.contains('Accounts Overview').click()
+        cy.contains('td', fromAccount).siblings().then(($el) => {
+              cy.convertToInt($el[0].innerText).then(finalBalance => {
+                  cy.convertToInt(initialBalance).then(value => {
+                      expect(finalBalance).to.be.eq(value - 200.00)
+              })
+            })
+        })
+
+        cy.contains('td > a', fromAccount).click()
+        cy.get('#transactionTable').find('td').then(($el) => {
+            $el.text().includes(`Bill Payment to ${payeeName}`)
         })
     })
 
