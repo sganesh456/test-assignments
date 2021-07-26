@@ -4,30 +4,29 @@ const USERNAME = Cypress.env('username')
 const PASSWORD = Cypress.env('password')
 
 context('Verify Account Creation', () => {
-    
-    let accountId;
 
     beforeEach(() => {
         cy.visit('/index.htm')
         cy.login(USERNAME, PASSWORD)
     })
 
-    it.skip('Verification of opening a checking account', () => {               
+    it('Verification of opening a checking account', () => {               
         cy.openNewAccount('CHECKING')
         cy.get('#newAccountId').click()            
     })
 
-    it.skip('Verification of opening a savings account', () => {               
+    it('Verification of opening a savings account', () => {               
         cy.openNewAccount('SAVINGS')
         cy.get('#newAccountId').click()            
     })
 
-    it.skip('Verification of account details page', () => {
-        let values = [];
+    it('Verification of account details page', () => {
         const ACCOUNT_TYPE = 'SAVINGS'
+        let values = []
+        let accountId;
 
         cy.openNewAccount(ACCOUNT_TYPE).then(($el) => {
-            accountId = $el.find('a').text()            
+            accountId = $el.find('a').text()
         })        
         cy.get('#newAccountId').click()
         cy.wait(3000)
@@ -41,23 +40,17 @@ context('Verify Account Creation', () => {
     })
 
     it('Verification of Bill Pay section', () => {
-        const formData = {
-            'payee.name': 'test',
-            'payee.address.street': 'test',
-            'payee.address.city': 'test',
-            'payee.address.state': 'test',
-            'payee.address.zipCode': 'test',
-            'payee.phoneNumber': '1234567890',
-            'payee.accountNumber': '13040',
-            'verifyAccount': '13040',
-            'amount': '200.00'
-        }
+        let fromAccount = Cypress.env('baseAccount')
+        let amount = '200.00'
+        let payeeName = 'test'
 
-        cy.contains('Bill Pay').click()
-        Object.keys(formData).forEach(valuePair => {
-            cy.fillBillPayForm(valuePair, formData[valuePair])
+        cy.doBillPay(fromAccount, Cypress.env('newAccountId'), payeeName, amount)
+        cy.wait(3000)
+        cy.contains('Bill Payment Complete').then(($el) => {
+            cy.wrap($el).next()
+        }).then(($text) => {           
+            expect($text.text().trim()).equal(`Bill Payment to ${payeeName} in the amount of $${amount} from account ${fromAccount} was successful.`)
         })
-        cy.get('input[value="Send Payment"]').click()
     })
 
     afterEach(() => {

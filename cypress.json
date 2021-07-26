@@ -2,6 +2,8 @@
     "baseUrl": "https://parabank.parasoft.com/parabank",
     "env": {
       "username": "john",
-      "password": "demo"
+      "password": "demo",
+      "baseAccount": "13344",
+      "newAccountId": "12345"
     }
   }
