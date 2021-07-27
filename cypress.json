@@ -5,6 +5,7 @@
       "username": "john",
       "password": "demo",
       "baseAccount": "13344",
-      "newAccountId": "12345"
+      "newAccountId": "12345",
+      "sessionId": "value"
     }
   }

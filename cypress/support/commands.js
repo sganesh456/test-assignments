@@ -93,3 +93,16 @@ Cypress.Commands.add('convertToInt', (value) => {
 
     return cy.wrap(parseFloat(value.replace(regex, '')))
 })
+
+Cypress.Commands.add('hitLoginEndpoint', (username, password) => {
+    let sessionId;
+
+    cy.request('POST', `${Cypress.config('baseUrl')}/login.htm?username=${username}&password=${password}`)
+    .should((response) => {        
+        cy.wrap(response.headers).getCookie('JSESSIONID').then(cookieValue => {
+            sessionId = cookieValue.value
+            Cypress.env('sessionId', sessionId)
+            cy.log(sessionId)
+        })
+    })
+})
