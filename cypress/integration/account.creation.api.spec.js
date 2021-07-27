@@ -1,4 +1,5 @@
 /// <reference types="Cypress" />
+import promisify from 'cypress-promise'
 
 context('verify account creation api', () => {
 
@@ -20,8 +21,10 @@ context('verify account creation api', () => {
         expect(response.status).equal(200)
         expect(response.body).property('type').equal('SAVINGS')     
         expect(response.body).property('id').to.not.equal(null)
-        expect(response.body).property('customerId').to.equal(CUSTOMER_ID)        
+        expect(response.body).property('customerId').to.equal(CUSTOMER_ID)
+        Cypress.env('newAccountId', response.body.id)      
         })
+
     })
 
     it('Verify opening a checking account', () => {
@@ -30,24 +33,46 @@ context('verify account creation api', () => {
         expect(response.status).equal(200)
         expect(response.body).property('type').equal('CHECKING')
         expect(response.body).property('id').to.not.equal(null)
-        expect(response.body).property('customerId').to.equal(CUSTOMER_ID)        
+        expect(response.body).property('customerId').to.equal(CUSTOMER_ID)
+        Cypress.env('newAccountId', response.body.id)  
         })
     })
 
-    it('Verify Bill Pay', () => {
-        let newAccountId = Cypress.env('newAccountId')
+    it('Verify Bill Pay', async () => {
         let initialBalance
 
-        cy.request('POST', (`${Cypress.config('baseUrl')}/services_proxy/bank/createAccount?customerId=${CUSTOMER_ID}&newAccountType=0&fromAccountId=${BASE_ACCOUNT}`))
-                .should((response) => {
-                    Cypress.env('newAccountId', response.body.id)       
-        })
+        const postBillPay = {
+            address: {
+                street: "21 st albans road",
+                city: "London",
+                state: "test",
+                zipCode: "N1c4da"
+            },
+            name: "test",
+            phoneNumber: "7898767778",
+            accountNumber: `${Cypress.env('newAccountId')}`
+        }
 
         cy.request('GET', (`${Cypress.config('baseUrl')}/services_proxy/bank/accounts/${Cypress.env('newAccountId')}`))
-                .should((response) => {
-                    expect(response.body).property('id').equal(newAccountId)
+                .then((response) => {
                     initialBalance = response.body.balance
+                    expect(response.status).equal(200)                    
                     expect(response.body).property('type').equal('CHECKING')
-                })
+        })
+
+        cy.request('POST', `${Cypress.config('baseUrl')}/services_proxy/bank/billpay?accountId=${Cypress.env('baseAccount')}&amount=200`, 
+                postBillPay)
+                .then((response) => {              
+                    expect(response.status).equal(200)                                        
+                    expect(response.body).property('payeeName').equal('test')                     
+                    expect(response.body).property('amount').equal(200)
+
+        })
+
+        cy.request('GET', `${Cypress.config('baseUrl')}/services_proxy/bank/accounts/${Cypress.env('baseAccount')}/transactions`)
+                .then((response) => {              
+                    expect(response.status).equal(200)
+        })
+        
     })
 })

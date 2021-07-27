@@ -19,6 +19,7 @@
     "cypress": "^8.0.0"
   },
   "dependencies": {
+    "cypress-promise": "^1.1.0",
     "percy": "^0.28.6"
   }
 }
