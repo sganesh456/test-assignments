@@ -47,7 +47,7 @@ context('Verify Account Creation', () => {
     })
 
     it('Verification of Account Overview section', () => {
-        const payeeName = 'test'
+        const PAYEENAME = 'test'
         let fromAccount = Cypress.env('baseAccount')
         let initialBalance
         let availableAmount
@@ -74,7 +74,7 @@ context('Verify Account Creation', () => {
 
         cy.contains('td > a', fromAccount).click()
         cy.get('#transactionTable').find('td').then(($el) => {
-            $el.text().includes(`Bill Payment to ${payeeName}`)
+            $el.text().includes(`Bill Payment to ${PAYEENAME}`)
         })
     })
 
