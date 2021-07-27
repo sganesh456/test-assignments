@@ -1,5 +1,6 @@
 {
     "baseUrl": "https://parabank.parasoft.com/parabank",
+    "screenshotOnFailure": "true",
     "env": {
       "username": "john",
       "password": "demo",

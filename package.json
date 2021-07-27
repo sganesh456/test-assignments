@@ -4,7 +4,9 @@
   "description": "A modern test framework for a demo bank application",
   "main": "index.js",
   "scripts": {
-    "test": "npx cypress run"
+    "test": "npx cypress run",
+    "cy": "./node_modules/.bin/cypress",
+    "cy:headless": "npm run cy run --headless"
   },
   "keywords": [
     "js",

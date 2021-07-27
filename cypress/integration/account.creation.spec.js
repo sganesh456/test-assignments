@@ -60,7 +60,7 @@ context('Verify Account Creation', () => {
             availableAmount = $el[1].innerText
         })
 
-        cy.doBillPay(fromAccount, Cypress.env('newAccountId'), payeeName, '200.00')
+        cy.doBillPay(fromAccount, Cypress.env('newAccountId'), PAYEENAME, '200.00')
         cy.contains('Bill Payment Complete')
 
         cy.contains('Accounts Overview').click()
