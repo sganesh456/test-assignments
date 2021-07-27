@@ -40,6 +40,8 @@ context('verify account creation api', () => {
 
     it('Verify Bill Pay', async () => {
         let initialBalance
+        let values = []
+        let responseBody = []
 
         const postBillPay = {
             address: {
@@ -70,9 +72,16 @@ context('verify account creation api', () => {
         })
 
         cy.request('GET', `${Cypress.config('baseUrl')}/services_proxy/bank/accounts/${Cypress.env('baseAccount')}/transactions`)
-                .then((response) => {              
+                .should((response) => {
                     expect(response.status).equal(200)
-        })
-        
-    })
+                }).then((value) => {
+                    (value.body).forEach(element => {
+                        if(element.hasOwnProperty('description')){
+                            values.push(element['description'])
+                        }                     
+                    });
+                    expect(values).to.contain('Bill Payment to test')
+                })
+                
+    })        
 })
