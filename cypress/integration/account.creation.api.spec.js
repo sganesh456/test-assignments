@@ -41,7 +41,7 @@ context('verify account creation api', () => {
     it('Verify Bill Pay', async () => {
         let initialBalance
         let values = []
-        let responseBody = []
+        const PAYEE_NAME = 'testpayee'
 
         const postBillPay = {
             address: {
@@ -50,7 +50,7 @@ context('verify account creation api', () => {
                 state: "test",
                 zipCode: "N1c4da"
             },
-            name: "test",
+            name: `${PAYEE_NAME}`,
             phoneNumber: "7898767778",
             accountNumber: `${Cypress.env('newAccountId')}`
         }
@@ -66,7 +66,7 @@ context('verify account creation api', () => {
                 postBillPay)
                 .then((response) => {              
                     expect(response.status).equal(200)                                        
-                    expect(response.body).property('payeeName').equal('test')                     
+                    expect(response.body).property('payeeName').equal(PAYEE_NAME)                     
                     expect(response.body).property('amount').equal(200)
 
         })
@@ -77,11 +77,10 @@ context('verify account creation api', () => {
                 }).then((value) => {
                     (value.body).forEach(element => {
                         if(element.hasOwnProperty('description')){
-                            values.push(element['description'])
+                            values.push(element['description'], element['amount'])
                         }                     
                     });
-                    expect(values).to.contain('Bill Payment to test')
-                })
-                
+                    expect(values).to.contain(`Bill Payment to ${PAYEE_NAME}`)
+                })                
     })        
 })
