@@ -1,4 +1,4 @@
-# Assignment - A
+# Assignment
 
 A test project using the automation tool, [Cypress](https://www.cypress.io/). This includes BDD style tests for 
 - Opening an Account (SAVINGS/CHECKING)
