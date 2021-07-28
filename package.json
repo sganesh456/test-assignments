@@ -6,7 +6,10 @@
   "scripts": {
     "test": "npx cypress run",
     "cy": "./node_modules/.bin/cypress",
-    "cy:headless": "npm run cy run --headless"
+    "headless": "npm run cy run --headless",
+    "percy:cypress": "percy exec -- cypress run --spec cypress/integration/visual.tests.spec.js",
+    "start:server": "serve -l 8000 .",
+    "percy": "start-server-and-test start:server 8000 percy:cypress"
   },
   "keywords": [
     "js",
@@ -18,6 +21,8 @@
   "devDependencies": {
     "@percy/cli": "^1.0.0-beta.60",
     "@percy/cypress": "^3.1.1",
-    "cypress": "^8.0.0"
+    "cypress": "^8.0.0",
+    "serve": "^12.0.0",
+    "start-server-and-test": "^1.13.1"
   }
 }
