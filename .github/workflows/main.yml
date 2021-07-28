@@ -44,3 +44,6 @@ jobs:
           custom-command: "npm percy"
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          run: |
+            git push
+
