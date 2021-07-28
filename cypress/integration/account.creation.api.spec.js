@@ -1,5 +1,4 @@
 /// <reference types="Cypress" />
-import promisify from 'cypress-promise'
 
 context('verify account creation api', () => {
 
