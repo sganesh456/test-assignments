@@ -42,8 +42,4 @@ jobs:
         with:
                   # Your test suites CLI command
           custom-command: "npm percy"
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          run: |
-            git push
 
