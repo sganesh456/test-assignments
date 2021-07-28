@@ -78,6 +78,24 @@ context('Verify Account Creation', () => {
         })
     })
 
+    it('Verification of Bill Pay form', () => {
+        const formData = {
+            'payee.name': 'Payee name is required.',
+            'payee.address.street': 'Address is required.',
+            'payee.address.city': 'City is required.',
+            'payee.address.state': 'State is required.',
+            'payee.address.zipCode': 'Zip Code is required.',
+            'payee.phoneNumber': 'Phone number is required.'
+        }
+    
+        cy.contains('Bill Pay').click()        
+        cy.get('input[value="Send Payment"]').click()
+
+        Object.keys(formData).forEach(valuePair => {
+            cy.validateBillPayForm(valuePair, formData[valuePair])
+        })
+    })
+
     afterEach(() => {
         cy.logout()
     })

@@ -54,6 +54,13 @@ Cypress.Commands.add('fillBillPayForm', (element, value) => {
     cy.get('.form2').find(`input[name="${element}"]`).type(value)
 })
 
+Cypress.Commands.add('validateBillPayForm', (element, text) => {
+    debugger
+    cy.get(`input[name="${element}"]`).closest('td').next().invoke('text').then(value =>{
+        expect(value.trim()).to.eq(text)
+    })
+})
+
 Cypress.Commands.add('doBillPay', (fromAccount, toAccount, payeeName, amount) => {
     const formData = {
         'payee.name': payeeName,
