@@ -16,9 +16,8 @@
   "author": "Ganesh Sugavanam",
   "license": "ISC",
   "devDependencies": {
+    "@percy/cli": "^1.0.0-beta.60",
+    "@percy/cypress": "^3.1.1",
     "cypress": "^8.0.0"
-  },
-  "dependencies": {
-    "percy": "^0.28.6"
   }
 }
