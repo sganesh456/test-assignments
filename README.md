@@ -31,7 +31,8 @@ $ $Env:PERCY_TOKEN="<token>"
 
 ## Run Tests
 1. All tests: `npm test`
-1. Headless: `npm run cy:headless`
+1. Headless: `npm run headless`
+1. Visual tests - Percy: `npm run percy`
 
 ## Watch video
 Once tests were executed, video files will be created matching spec filenames under videos folder.

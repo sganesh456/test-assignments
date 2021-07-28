@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-
 const USERNAME = Cypress.env('username')
 const PASSWORD = Cypress.env('password')
 const fromAccount = Cypress.env('baseAccount')
