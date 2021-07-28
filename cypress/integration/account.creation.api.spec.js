@@ -37,6 +37,51 @@ context('verify account creation api', () => {
         Cypress.env('newAccountId', response.body.id)  
         })
     })
+    
+    it('Verify login error for invalid username/password', () => {
+
+        cy.request({ method: 'POST', url: `${Cypress.config('baseUrl')}/login.htm?username=test&password=test123`, failOnStatusCode: false})
+        .should((response) => {
+            expect(response.status).equal(500)
+        })
+    })
+
+    it('Verify bad request for invalid payload', () => {
+
+        cy.request({ method: 'POST', url: (`${Cypress.config('baseUrl')}/services_proxy/bank/createAccount?customerId=${CUSTOMER_ID}&newAccountType=1`),
+                    failOnStatusCode: false})
+                .should((response) => {
+            expect(response.status).equal(400)
+            })
+
+        cy.request({ method: 'POST', url: `${Cypress.config('baseUrl')}/services_proxy/bank/billpay?amount=200`, 
+                failOnStatusCode: false })
+                .then((response) => {              
+                    expect(response.status).equal(400)
+        })
+
+        cy.request({ method: 'GET', url: `${Cypress.config('baseUrl')}/services_proxy/bank/accounts/transactions`, failOnStatusCode: false })
+                .should((response) => {
+                    expect(response.status).equal(400)
+
+                })
+    })
+
+    it('Verify not found when endpoint/account is invalid', () => {
+
+        cy.request({ method: 'GET', url: `${Cypress.config('baseUrl')}/services_proxy/bank/accounts`, failOnStatusCode: false })
+        .should((response) => {
+            expect(response.status).equal(404)
+        })
+    })
+
+    it('Verify internal server error', () => {
+
+        cy.request({ method: 'GET', url: `${Cypress.config('baseUrl')}/services_proxy/bank/accounts/1212/transactions`, failOnStatusCode: false})
+        .should((response) => {
+            expect(response.status).equal(500)
+        })
+    })
 
     it('Verify Bill Pay', async () => {
         let initialBalance
@@ -82,5 +127,6 @@ context('verify account creation api', () => {
                     });
                     expect(values).to.contain(`Bill Payment to ${PAYEE_NAME}`)
                 })                
-    })        
+    })
+    
 })
